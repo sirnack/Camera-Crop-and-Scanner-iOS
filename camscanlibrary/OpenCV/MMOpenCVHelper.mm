@@ -92,6 +92,9 @@
     return cvMatTest;
 }
 
+
+
+
 + (cv::Mat)cvMatFromAdjustedUIImage:(UIImage *)image
 {
     CGColorSpaceRef colorSpace = CGImageGetColorSpace(image.CGImage);

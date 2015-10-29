@@ -60,18 +60,6 @@
         self.retakeBut.alpha=0;
         self.doneBut.alpha=0;
     }];
-
-    
-   
-    //Usage
-//        __weak __typeof(self)wSelf = self;
-//        [self latestPhotoWithCompletion:^(UIImage *photo) {
-//            
-//            UIImageRenderingMode renderingMode = YES ? UIImageRenderingModeAlwaysOriginal : UIImageRenderingModeAlwaysTemplate;
-//            [wSelf.switchCameraBut setImage:[photo imageWithRenderingMode:renderingMode] forState:UIControlStateNormal];
-//
-//        }];
-    
 }
 
 
@@ -116,7 +104,7 @@
 -(void)setUI{
     
     //Flash But
-    self.flashBut.tintColor=[UIColor grayColor];
+    self.flashBut.tintColor=[UIColor whiteColor];
 //    self.flashBut.backgroundColor=[UIColor colorWithHexString:backgroundHex];
     self.flashBut.layer.cornerRadius = self.flashBut.frame.size.width / 2;
     self.flashBut.clipsToBounds=YES;
@@ -124,7 +112,7 @@
     [self.flashBut setImage:[UIImage renderImage:@"CameraFlashOff"] forState:UIControlStateNormal];
     
     //Camera Switch
-    self.switchCameraBut.tintColor=[UIColor grayColor];
+    self.switchCameraBut.tintColor=[UIColor whiteColor];
 //    self.switchCameraBut.backgroundColor=[UIColor colorWithHexString:backgroundHex];
     self.switchCameraBut.layer.cornerRadius = self.switchCameraBut.frame.size.width / 2;
     self.switchCameraBut.clipsToBounds=YES;
@@ -132,7 +120,7 @@
     [self.switchCameraBut setImage:[UIImage renderImage:@"Switch"] forState:UIControlStateNormal];
     
     //Done
-    self.doneBut.tintColor=[UIColor grayColor];
+    self.doneBut.tintColor=[UIColor whiteColor];
 //    self.doneBut.backgroundColor=[UIColor colorWithHexString:backgroundHex];
     self.doneBut.layer.cornerRadius = self.doneBut.frame.size.width / 2;
     self.doneBut.clipsToBounds=YES;
@@ -141,7 +129,7 @@
 
     
     //Capture
-    self.captureBut.tintColor=[UIColor grayColor];
+    self.captureBut.tintColor=[UIColor whiteColor];
 //    self.captureBut.backgroundColor=[UIColor colorWithHexString:backgroundHex];
     self.captureBut.layer.cornerRadius = self.captureBut.frame.size.width / 2;
     self.captureBut.clipsToBounds=YES;
@@ -149,7 +137,7 @@
     [self.captureBut setImage:[UIImage renderImage:@"CameraCapture"] forState:UIControlStateNormal];
     
     //Retake
-    self.retakeBut.tintColor=[UIColor grayColor];
+    self.retakeBut.tintColor=[UIColor whiteColor];
 //    self.retakeBut.backgroundColor=[UIColor colorWithHexString:backgroundHex];
     self.retakeBut.layer.cornerRadius = self.retakeBut.frame.size.width / 2;
     self.retakeBut.clipsToBounds=YES;
@@ -157,7 +145,7 @@
     [self.retakeBut setImage:[UIImage renderImage:@"Retake"] forState:UIControlStateNormal];
     
     //Back
-    self.backBut.tintColor=[UIColor grayColor];
+    self.backBut.tintColor=[UIColor whiteColor];
 //    self.backBut.backgroundColor=[UIColor colorWithHexString:backgroundHex];
     self.backBut.layer.cornerRadius = self.backBut.frame.size.width / 2;
     self.backBut.clipsToBounds=YES;

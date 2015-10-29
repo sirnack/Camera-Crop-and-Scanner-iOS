@@ -6,7 +6,7 @@
 #import "CropViewController.h"
 #include <vector>
 #import "MMOpenCVHelper.h"
-#define backgroundHex @"2196f3"
+#define backgroundHex @"444444"
 #define kCameraToolBarHeight 100
 #import "UIColor+HexRepresentation.h"
 #import "MMCropView.h"
@@ -15,12 +15,13 @@
 
 @interface CropViewController (){
     UIScrollView *scrollView;
-   
+    
 }
 @property (strong, nonatomic) MMCropView *cropRect;
 @end
 
 @implementation CropViewController
+@synthesize queue = _queue;
 -(BOOL)prefersStatusBarHidden{
     return YES;
 }
@@ -32,15 +33,31 @@
 
 
 
+
+
 -(void)viewDidLoad{
-   
-//    _rotateSlider=1;
+    [super viewDidLoad];
+    
+//    
+//    if (_queue == nil) {
+//        _queue = [[NSOperationQueue alloc] init];
+    
+        
+//    }
+    
+//    tempSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+//    tempSpinner.center = self.view.center;
+//    [self.view addSubview: tempSpinner];
+//    [tempSpinner startAnimating];
+//        [_queue waitUntilAllOperationsAreFinished];
+//        [tempSpinner stopAnimating];
+//    
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:YES];
     [self initCropFrame];
-//    [self adjustPossition];
+    //    [self adjustPossition];
     
     CGRect cropFrame=CGRectMake(_sourceImageView.contentFrame.origin.x,_sourceImageView.contentFrame.origin.y+64,_sourceImageView.contentFrame.size.width,_sourceImageView.contentFrame.size.height);
     _cropRect= [[MMCropView alloc] initWithFrame:cropFrame];
@@ -64,19 +81,21 @@
     [_sourceImageView setImage:_adjustedImage];
     //     [_sourceImageView setImage:[UIImage imageNamed:@"testtwo.jpg"]];
     _sourceImageView.clipsToBounds=YES;
-   
+    
     
     [self.view addSubview:_sourceImageView];
     
     //    NSLog(@"%f %f",_sourceImageView.contentFrame.size.height,_sourceImageView.contentFrame.size.height);
     
     
-       [self buttonsScroll];
+    [self buttonsScroll];
     
     [UIView animateWithDuration:0.5 animations:^{
         scrollView.frame=CGRectMake(0, -64, self.view.bounds.size.width, 64);
     }];
-
+    
+    
+    
 }
 
 
@@ -124,7 +143,7 @@
             _sourceImageView.image=_cropImage;
             break;
         case 2:
-             _sourceImageView.image=[self grayImage:_cropImage];
+            _sourceImageView.image=[self grayImage:_cropImage];
             break;
         case 3:
             _sourceImageView.image= [self blackandWhite:_cropImage];
@@ -141,16 +160,16 @@
                 
             }];
             break;
-
+            
     }
 }
 
 -(void)setCropUI{
     //Done
     self.dismissBut.tintColor=[UIColor whiteColor];
-//    self.dismissBut.backgroundColor=[UIColor colorWithHexString:backgroundHex];
-//    self.dismissBut.layer.cornerRadius = self.dismissBut.frame.size.width / 2;
-//    self.dismissBut.clipsToBounds=YES;
+    //    self.dismissBut.backgroundColor=[UIColor colorWithHexString:backgroundHex];
+    //    self.dismissBut.layer.cornerRadius = self.dismissBut.frame.size.width / 2;
+    //    self.dismissBut.clipsToBounds=YES;
     
     [self.dismissBut setImage:[UIImage renderImage:@"Cancel"] forState:UIControlStateNormal];
     [self.leftRotateBut setImage:[UIImage renderImage:@"Left"] forState:UIControlStateNormal];
@@ -161,26 +180,26 @@
     self.leftRotateBut.tintColor=[UIColor whiteColor];
     self.rightRotateBut.tintColor=[UIColor whiteColor];
     self.saveImage.tintColor=[UIColor whiteColor];
-//    self.cropBut.backgroundColor=[UIColor colorWithHexString:backgroundHex];
-//    self.cropBut.layer.cornerRadius = self.cropBut.frame.size.width / 2;
-//    self.cropBut.clipsToBounds=YES;
+    //    self.cropBut.backgroundColor=[UIColor colorWithHexString:backgroundHex];
+    //    self.cropBut.layer.cornerRadius = self.cropBut.frame.size.width / 2;
+    //    self.cropBut.clipsToBounds=YES;
     
     [self.cropBut setImage:[UIImage renderImage:@"Crop"] forState:UIControlStateNormal];
     [self.saveImage setImage:[UIImage renderImage:@"SavePhoto"] forState:UIControlStateNormal];
     
-   
-
+    
+    
 }
 
 
 //- (void)adjustPossition
 //{
 //    CGAffineTransform saveState = _sourceImageView.transform;
-//    
+//
 //    _sourceImageView.transform = CGAffineTransformIdentity;
-//    
+//
 //    [_sourceImageView setFrameToFitImage];
-//    
+//
 //    _sourceImageView.transform = saveState;
 //}
 
@@ -195,7 +214,7 @@
         [_cropRect checkangle:0];
     }
     [_cropRect moveActivePointToLocation:posInStretch];
-   
+    
 }
 
 
@@ -286,20 +305,20 @@
         [_cropRect topRightCornerToCGPoint:[(NSValue *)[sortedPoints objectForKey:@"1"] CGPointValue]];
         [_cropRect bottomRightCornerToCGPoint:[(NSValue *)[sortedPoints objectForKey:@"2"] CGPointValue]];
         [_cropRect bottomLeftCornerToCGPoint:[(NSValue *)[sortedPoints objectForKey:@"3"] CGPointValue]];
-
-        NSLog(@"%@ Sorted Points",sortedPoints);
-       
         
-
+        NSLog(@"%@ Sorted Points",sortedPoints);
+        
+        
+        
     }
     else{
- 
+        
     }
     
     original.release();
     
     
-   
+    
 }
 
 
@@ -307,9 +326,9 @@
 void find_squares(cv::Mat& image, std::vector<std::vector<cv::Point>>&squares) {
     
     // blur will enhance edge detection
-   
+    
     cv::Mat blurred(image);
-//    medianBlur(image, blurred, 9);
+    //    medianBlur(image, blurred, 9);
     GaussianBlur(image, blurred, cvSize(11,11), 0);//change from median blur to gaussian for more accuracy of square detection
     
     cv::Mat gray0(blurred.size(), CV_8U), gray;
@@ -330,7 +349,7 @@ void find_squares(cv::Mat& image, std::vector<std::vector<cv::Point>>&squares) {
             if (l == 0)
             {
                 Canny(gray0, gray, 10, 20, 3); //
-//                Canny(gray0, gray, 0, 50, 5);
+                //                Canny(gray0, gray, 0, 50, 5);
                 
                 // Dilate helps to remove potential holes between edge segments
                 dilate(gray, gray, cv::Mat(), cv::Point(-1,-1));
@@ -440,86 +459,118 @@ cv::Mat debugSquares( std::vector<std::vector<cv::Point> > squares, cv::Mat imag
     return image;
 }
 
+
+
+
+
 - (IBAction)cropAction:(id)sender {
     
-    if([_cropRect frameEdited]){
-        
-    //Thanks To stackOverflow
-    CGFloat scaleFactor =  [_sourceImageView contentScale];
-    CGPoint ptBottomLeft = [_cropRect coordinatesForPoint:1 withScaleFactor:scaleFactor];
-    CGPoint ptBottomRight = [_cropRect coordinatesForPoint:2 withScaleFactor:scaleFactor];
-    CGPoint ptTopRight = [_cropRect coordinatesForPoint:3 withScaleFactor:scaleFactor];
-    CGPoint ptTopLeft = [_cropRect coordinatesForPoint:4 withScaleFactor:scaleFactor];
-        
-        
+    tempSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+    tempSpinner.center = self.view.center;
+    [self.view addSubview: tempSpinner];
     
-    CGFloat w1 = sqrt( pow(ptBottomRight.x - ptBottomLeft.x , 2) + pow(ptBottomRight.x - ptBottomLeft.x, 2));
-    CGFloat w2 = sqrt( pow(ptTopRight.x - ptTopLeft.x , 2) + pow(ptTopRight.x - ptTopLeft.x, 2));
+    [tempSpinner startAnimating];
+    tempSpinner.hidden = NO;
     
-    CGFloat h1 = sqrt( pow(ptTopRight.y - ptBottomRight.y , 2) + pow(ptTopRight.y - ptBottomRight.y, 2));
-    CGFloat h2 = sqrt( pow(ptTopLeft.y - ptBottomLeft.y , 2) + pow(ptTopLeft.y - ptBottomLeft.y, 2));
-    
-    CGFloat maxWidth = (w1 < w2) ? w1 : w2;
-    CGFloat maxHeight = (h1 < h2) ? h1 : h2;
+//    _queue = [[NSOperationQueue alloc] init];
+     [[[NSOperationQueue alloc] init] addOperationWithBlock:^{
+        // process
         
-
-    
-    cv::Point2f src[4], dst[4];
-    src[0].x = ptTopLeft.x;
-    src[0].y = ptTopLeft.y;
-    src[1].x = ptTopRight.x;
-    src[1].y = ptTopRight.y;
-    src[2].x = ptBottomRight.x;
-    src[2].y = ptBottomRight.y;
-    src[3].x = ptBottomLeft.x;
-    src[3].y = ptBottomLeft.y;
-    
-    dst[0].x = 0;
-    dst[0].y = 0;
-    dst[1].x = maxWidth - 1;
-    dst[1].y = 0;
-    dst[2].x = maxWidth - 1;
-    dst[2].y = maxHeight - 1;
-    dst[3].x = 0;
-    dst[3].y = maxHeight - 1;
-    
-    cv::Mat undistorted = cv::Mat( cvSize(maxWidth,maxHeight), CV_8UC4);
-    cv::Mat original = [MMOpenCVHelper cvMatFromUIImage:_adjustedImage];
-        
-//    NSLog(@"%f %f %f %f",ptBottomLeft.x,ptBottomRight.x,ptTopRight.x,ptTopLeft.x);
-    cv::warpPerspective(original, undistorted, cv::getPerspectiveTransform(src, dst), cvSize(maxWidth, maxHeight));
-
-    [UIView transitionWithView:_sourceImageView duration:0.3 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
-       
-       
-        
-        _sourceImageView.image=[MMOpenCVHelper UIImageFromCVMat:undistorted];
-         _cropImage=_sourceImageView.image;
-        
-//         _sourceImageView.image = [MMOpenCVHelper UIImageFromCVMat:grayImage];//For gray image
-        
-    } completion:^(BOOL finished) {
-        _cropRect.hidden=YES;
-        [UIView animateWithDuration:0.5 animations:^{
-            scrollView.frame=CGRectMake(0, 0, self.view.bounds.size.width, 64);
+        if([_cropRect frameEdited]){
             
-        }];
-
+            //Thanks To stackOverflow
+            CGFloat scaleFactor =  [_sourceImageView contentScale];
+            CGPoint ptBottomLeft = [_cropRect coordinatesForPoint:1 withScaleFactor:scaleFactor];
+            CGPoint ptBottomRight = [_cropRect coordinatesForPoint:2 withScaleFactor:scaleFactor];
+            CGPoint ptTopRight = [_cropRect coordinatesForPoint:3 withScaleFactor:scaleFactor];
+            CGPoint ptTopLeft = [_cropRect coordinatesForPoint:4 withScaleFactor:scaleFactor];
+            
+            
+            
+            CGFloat w1 = sqrt( pow(ptBottomRight.x - ptBottomLeft.x , 2) + pow(ptBottomRight.x - ptBottomLeft.x, 2));
+            CGFloat w2 = sqrt( pow(ptTopRight.x - ptTopLeft.x , 2) + pow(ptTopRight.x - ptTopLeft.x, 2));
+            
+            CGFloat h1 = sqrt( pow(ptTopRight.y - ptBottomRight.y , 2) + pow(ptTopRight.y - ptBottomRight.y, 2));
+            CGFloat h2 = sqrt( pow(ptTopLeft.y - ptBottomLeft.y , 2) + pow(ptTopLeft.y - ptBottomLeft.y, 2));
+            
+            CGFloat maxWidth = (w1 < w2) ? w1 : w2;
+            CGFloat maxHeight = (h1 < h2) ? h1 : h2;
+            
+            
+            
+            cv::Point2f src[4], dst[4];
+            src[0].x = ptTopLeft.x;
+            src[0].y = ptTopLeft.y;
+            src[1].x = ptTopRight.x;
+            src[1].y = ptTopRight.y;
+            src[2].x = ptBottomRight.x;
+            src[2].y = ptBottomRight.y;
+            src[3].x = ptBottomLeft.x;
+            src[3].y = ptBottomLeft.y;
+            
+            dst[0].x = 0;
+            dst[0].y = 0;
+            dst[1].x = maxWidth - 1;
+            dst[1].y = 0;
+            dst[2].x = maxWidth - 1;
+            dst[2].y = maxHeight - 1;
+            dst[3].x = 0;
+            dst[3].y = maxHeight - 1;
+            
+            cv::Mat undistorted = cv::Mat( cvSize(maxWidth,maxHeight), CV_8UC4);
+            cv::Mat original = [MMOpenCVHelper cvMatFromUIImage:_adjustedImage];
+            
+            cv::warpPerspective(original, undistorted, cv::getPerspectiveTransform(src, dst), cvSize(maxWidth, maxHeight));
+            
+            
+            [UIView transitionWithView:_sourceImageView duration:0.3 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
+                
+                
+                _sourceImageView.image=[MMOpenCVHelper UIImageFromCVMat:undistorted];
+                _cropImage=_sourceImageView.image;
+                
+                
+                
+                NSLog(@"Finish Crop");
+                
+            }
+                            completion:^(BOOL finished) {
+                                _cropRect.hidden=YES;
+                                [UIView animateWithDuration:0.5 animations:^{
+                                    scrollView.frame=CGRectMake(0, 0, self.view.bounds.size.width, 64);
+                                    
+                                }];
+                                
+                            }];
+            
+            original.release();
+            undistorted.release();
+            
+            
+            
+        }
+            
+            
+         
+        NSLog(@"background thread.");
+        
+//        // hide loading.
+         [_queue waitUntilAllOperationsAreFinished];
+         [tempSpinner stopAnimating];
+         tempSpinner.hidden = YES;
+        
     }];
-        
-    original.release();
-    undistorted.release();
-        
-       
-        
-    }
-    else{
-        UIAlertView  *alertView = [[UIAlertView alloc] initWithTitle:@"CamScanner" message:@"Invalid Rect" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alertView show];
+    
 
-    }
-   
+
 }
+
+
+
+
+
+
+
 
 
 //Image Processing
@@ -530,10 +581,10 @@ cv::Mat debugSquares( std::vector<std::vector<cv::Point> > squares, cv::Mat imag
     cv::adaptiveThreshold(grayImage, grayImage, 255, cv::ADAPTIVE_THRESH_MEAN_C, cv::THRESH_BINARY, 5, 2);
     
     UIImage *grayeditImage=[MMOpenCVHelper UIImageFromCVMat:grayImage];
-     grayImage.release();
+    grayImage.release();
     
     return grayeditImage;
-
+    
 }
 
 -(UIImage *)magicColor:(UIImage *)processedImage{
@@ -547,8 +598,8 @@ cv::Mat debugSquares( std::vector<std::vector<cv::Point> > squares, cv::Mat imag
     UIImage *magicColorImage=[MMOpenCVHelper UIImageFromCVMat:new_image];
     new_image.release();
     return magicColorImage;
-   
-
+    
+    
 }
 
 -(UIImage *)blackandWhite:(UIImage *)processedImage{
@@ -561,51 +612,19 @@ cv::Mat debugSquares( std::vector<std::vector<cv::Point> > squares, cv::Mat imag
     
     UIImage *blackWhiteImage=[MMOpenCVHelper UIImageFromCVMat:new_image];
     new_image.release();
-
+    
     
     
     return blackWhiteImage;
-
+    
 }
 
 - (IBAction)dismissAction:(id)sender {
-//   [self.cropdelegate didFinishCropping:[UIImage imageWithData:UIImageJPEGRepresentation(_sourceImageView.image, 0.0)] from:self];
-       [self.cropdelegate didFinishCropping:_sourceImageView.image from:self];
-
-//    NSLog(@"%d",UIImagePNGRepresentation(_sourceImageView.image).length);
-//    NSLog(@"Size of Image %d",UIImageJPEGRepresentation(_sourceImageView.image, 0.5).length);
+    [self.cropdelegate didFinishCropping:_sourceImageView.image from:self];
+    
 }
 
 - (IBAction)rightRotateAction:(id)sender {
-    
-    
-//    CIImage *imgToRotate = [CIImage imageWithCGImage:_sourceImageView.image.CGImage];
-//    
-//    CGAffineTransform transform = CGAffineTransformMakeRotation(M_PI_2);
-//    
-//    CIImage *rotatedImage = [imgToRotate imageByApplyingTransform:transform];
-//    
-//    CGRect extent = [rotatedImage extent];
-//    
-//    CIContext *context = [CIContext contextWithOptions:@{kCIContextUseSoftwareRenderer : @(NO)}];
-//    
-//    CGImageRef cgImage = [context createCGImage:rotatedImage fromRect:extent];
-//    
-//    _adjustedImage = [UIImage imageWithCGImage:cgImage];
-//    
-//    
-//    [UIView transitionWithView:_sourceImageView duration:0.2 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
-//        _sourceImageView.image = _adjustedImage;
-//    } completion:^(BOOL finished) {
-//        
-//    }];
-//    
-//    
-//    CGRect cropFrame=CGRectMake(_sourceImageView.contentFrame.origin.x,_sourceImageView.contentFrame.origin.y+64,_sourceImageView.contentFrame.size.width,_sourceImageView.contentFrame.size.height);
-//    _cropRect.frame=cropFrame;
-//    
-//    [self detectEdges];
-//    CGImageRelease(cgImage);
     
     CGFloat value = (int)floorf((_rotateSlider + 1)*2) + 1;
     
@@ -614,39 +633,11 @@ cv::Mat debugSquares( std::vector<std::vector<cv::Point> > squares, cv::Mat imag
     [UIView animateWithDuration:0.5 animations:^{
         [self rotateStateDidChange];
     }];
-   
-
+    
+    
 }
 
 - (IBAction)leftRotateAction:(id)sender {
-    
-//    CIImage *imgToRotate = [CIImage imageWithCGImage:_sourceImageView.image.CGImage];
-//    
-//    CGAffineTransform transform = CGAffineTransformMakeRotation(-M_PI_2);
-//    
-//    CIImage *rotatedImage = [imgToRotate imageByApplyingTransform:transform];
-//    
-//    CGRect extent = [rotatedImage extent];
-//    
-//    CIContext *context =  [CIContext contextWithOptions:@{kCIContextUseSoftwareRenderer : @(NO)}];
-//    
-//    CGImageRef cgImage = [context createCGImage:rotatedImage fromRect:extent];
-//    
-//    _adjustedImage = [UIImage imageWithCGImage:cgImage];
-//    
-//    [UIView transitionWithView:_sourceImageView duration:0.2 options:UIViewAnimationOptionTransitionCrossDissolve animations:^{
-//        _sourceImageView.image = _adjustedImage;
-//    } completion:^(BOOL finished) {
-//       
-//    }];
-//    
-//    CGRect cropFrame=CGRectMake(_sourceImageView.contentFrame.origin.x,_sourceImageView.contentFrame.origin.y+64,_sourceImageView.contentFrame.size.width,_sourceImageView.contentFrame.size.height);
-//    _cropRect.frame=cropFrame;
-//    
-//    
-//    [self detectEdges];
-//    CGImageRelease(cgImage);
-//
     
     CGFloat value = (int)floorf((_rotateSlider + 1)*2) - 1;
     
@@ -657,20 +648,20 @@ cv::Mat debugSquares( std::vector<std::vector<cv::Point> > squares, cv::Mat imag
     }];
 }
 
+
 //Save to Photo Album
 
 - (IBAction)SaveCrop:(id)sender {
-//    UIImageWriteToSavedPhotosAlbum(image_view.image,self, nil, nil);
     UIImageWriteToSavedPhotosAlbum(_sourceImageView.image, self, nil, nil);
     
     UIAlertView *alertView;
     alertView = [[UIAlertView alloc] initWithTitle:@"Status"
-                     message:@"Photo Saved"
-                     delegate:nil
-                     cancelButtonTitle:@"OK"
-                     otherButtonTitles:nil];
-                     [alertView show];
-
+                                           message:@"Photo Saved"
+                                          delegate:nil
+                                 cancelButtonTitle:@"OK"
+                                 otherButtonTitles:nil];
+    [alertView show];
+    
     
     NSLog(@"Photo Saved");
     [UIView animateWithDuration:0.5 animations:^{
@@ -682,10 +673,6 @@ cv::Mat debugSquares( std::vector<std::vector<cv::Point> > squares, cv::Mat imag
 #pragma mark CLOSE
 
 - (void) closeWithCompletion:(void (^)(void))completion {
-    
-    // Need alpha 0.0 before dismissing otherwise sticks out on dismissal
-    
-    
     [self dismissViewControllerAnimated:YES completion:^{
         
         completion();
@@ -727,8 +714,7 @@ cv::Mat debugSquares( std::vector<std::vector<cv::Point> > squares, cv::Mat imag
     transform = CATransform3DScale(transform, scale, scale, 1);
     _sourceImageView.layer.transform = transform;
     _cropRect.layer.transform = transform;
-   
-//    NSLog(@"%@",_sourceImageView);
+    
 }
 
 

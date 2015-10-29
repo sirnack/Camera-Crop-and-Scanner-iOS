@@ -18,6 +18,8 @@
 @interface CropViewController : UIViewController{
     CGFloat _rotateSlider;
     CGRect _initialRect,final_Rect;
+    NSOperationQueue *opQueue;
+    UIActivityIndicatorView *tempSpinner;
 }
 @property (weak,nonatomic) id<MMCropDelegate> cropdelegate;
 @property (strong, nonatomic) UIImageView *sourceImageView;
@@ -26,6 +28,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *rightRotateBut;
 @property (weak, nonatomic) IBOutlet UIButton *leftRotateBut;
 @property (weak, nonatomic) IBOutlet UIButton *saveImage;
+@property(strong, nonatomic)NSOperationQueue *queue;
 
 
 @property (strong, nonatomic) UIImage *adjustedImage,*cropgrayImage,*cropImage;
@@ -35,7 +38,10 @@
 - (IBAction)leftRotateAction:(id)sender;
 - (IBAction)SaveCrop:(id)sender;
 
+
 //Detect Edges
 -(void)detectEdges;
 - (void) closeWithCompletion:(void (^)(void))completion ;
+
+
 @end

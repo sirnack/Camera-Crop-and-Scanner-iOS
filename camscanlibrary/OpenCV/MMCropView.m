@@ -124,6 +124,8 @@
     return frameMoved;
 }
 
+//ฟังก์ชันนี้หายไปภาพที่ crop แล้วจะไม่ขึ้น
+
 - (CGPoint)coordinatesForPoint: (int)point withScaleFactor: (CGFloat)scaleFactor
 {
     CGPoint tmp = CGPointMake(0, 0);
@@ -158,21 +160,11 @@
 
 - (void)setPoints
 {
-//    a = CGPointMake(0 + 15, self.bounds.size.height - 15);
-//    b = CGPointMake(self.bounds.size.width - 15, self.bounds.size.height - 15);
-//    c = CGPointMake(self.bounds.size.width - 15, 0 + 15);
-//    d = CGPointMake(0 + 15, 0 + 15);
-    a = CGPointMake(0 + 0, self.bounds.size.height - 0);
-    b = CGPointMake(self.bounds.size.width - 0, self.bounds.size.height - 0);
-    c = CGPointMake(self.bounds.size.width - 0, 0 + 0);
-    d = CGPointMake(0 + 0, 0 + 0);
-    
-    //middle
-//    e = CGPointMake((a.x+b.x)/2 ,a.y);
-//    f = CGPointMake(b.x, 0 + (b.y + c.y)/2);
-//    g = CGPointMake((c.x+d.x)/2, 0 + c.y);
-//    h = CGPointMake(a.x, 0 + (a.y + d.y)/2);
-    
+    a = CGPointMake(0 + 15, self.bounds.size.height - 15);
+    b = CGPointMake(self.bounds.size.width - 15, self.bounds.size.height - 15);
+    c = CGPointMake(self.bounds.size.width - 15, 0 + 15);
+    d = CGPointMake(0 + 15, 0 + 15);
+
 
 }
 
@@ -184,10 +176,6 @@
     [_pointB setFrame:CGRectMake(b.x - kCropButtonSize / 2, b.y - kCropButtonSize / 2, kCropButtonSize, kCropButtonSize)];
     [_pointA setFrame:CGRectMake(a.x - kCropButtonSize / 2, a.y - kCropButtonSize / 2, kCropButtonSize, kCropButtonSize)];
     
-//    [_pointE setFrame:CGRectMake(e.x - kCropButtonSize / 2, e.y - kCropButtonSize / 2, kCropButtonSize, kCropButtonSize)];
-//    [_pointF setFrame:CGRectMake(f.x - kCropButtonSize / 2, f.y - kCropButtonSize / 2, kCropButtonSize, kCropButtonSize)];
-//    [_pointG setFrame:CGRectMake(g.x - kCropButtonSize / 2, g.y - kCropButtonSize / 2, kCropButtonSize, kCropButtonSize)];
-//    [_pointH setFrame:CGRectMake(h.x - kCropButtonSize / 2, h.y - kCropButtonSize / 2, kCropButtonSize, kCropButtonSize)];
     
   
 }
@@ -231,8 +219,6 @@
     if (context)
     {
         
-        // [UIColor colorWithRed:0.52f green:0.65f blue:0.80f alpha:1.00f];
-        
 //        CGContextSetRGBFillColor(context, 0.0f, 0.0f, 0.0f, 0.7f);
         CGContextSetRGBFillColor(context, 0.0f, 0.0f, 0.0f, 0.0f);
         if([self checkForNeighbouringPoints:currentIndex]>=0 ){
@@ -253,7 +239,7 @@
         CGContextFillRect(context, boundingRect);
         
         CGMutablePathRef pathRef = CGPathCreateMutable();
-        
+        // วางเส้นและจุดในการลาก crop
         CGPathMoveToPoint(pathRef, NULL, _pointA.frame.origin.x+15, _pointA.frame.origin.y+15);
         CGPathAddLineToPoint(pathRef, NULL, _pointB.frame.origin.x+15, _pointB.frame.origin.y+15);
         CGPathAddLineToPoint(pathRef, NULL, _pointC.frame.origin.x+15, _pointC.frame.origin.y+15);
@@ -285,7 +271,6 @@
     CGPoint p1;
     CGPoint p2 ;
     CGPoint p3;
-    //    NSLog(@"%d",index);
     
     for (int i=0; i<points.count; i++) {
         switch (i) {
@@ -328,11 +313,6 @@
         float cross = (ab.x * cb.y - ab.y * cb.x); // cross product
         
         float alpha = atan2(cross, dot);
-        
-        
-        //        NSLog(@"%f", -1*(float) floor(alpha * 180. / 3.14 + 0.5));
-        
-        
         
         if((-1*(float) floor(alpha * 180. / 3.14 + 0.5))<0){
             return -1*(float) floor(alpha * 180. / 3.14 + 0.5);
@@ -543,7 +523,6 @@
 
 - (void)moveActivePointToLocation:(CGPoint)locationPoint
 {
-    //    NSLog(@"location: %f,%f", locationPoint.x, locationPoint.y);
     CGFloat newX = locationPoint.x;
     CGFloat newY = locationPoint.y;
     //cap off possible values
@@ -561,13 +540,10 @@
     
     if (self.activePoint && !middlePoint){
         self.activePoint.frame = CGRectMake(locationPoint.x -kCropButtonSize/2, locationPoint.y -kCropButtonSize/2, kCropButtonSize, kCropButtonSize);
-//        [self cornerControlsMiddle];
-        
-//        NSLog(@"Point D %f %f",_pointD.frame.origin.x,_pointD.frame.origin.y);
+
     }
     else{
         if(![self checkForNeighbouringPoints:currentIndex]){
-//            [self movePointsForMiddle:locationPoint];
         }
         
       
@@ -576,53 +552,5 @@
     
 }
 
-
-//Corner Touch
-//
-//-(void)cornerControlsMiddle{
-//    
-//    self.pointE.frame=CGRectMake((self.pointA.frame.origin.x+self.pointB.frame.origin.x)/2, (self.pointA.frame.origin.y+self.pointB.frame.origin.y)/2, kCropButtonSize, kCropButtonSize);
-//    self.pointG.frame=CGRectMake((self.pointC.frame.origin.x+self.pointD.frame.origin.x)/2, (self.pointC.frame.origin.y+self.pointD.frame.origin.y)/2, kCropButtonSize, kCropButtonSize);
-//    self.pointF.frame=CGRectMake((self.pointB.frame.origin.x+self.pointC.frame.origin.x)/2, (self.pointB.frame.origin.y+self.pointC.frame.origin.y)/2, kCropButtonSize, kCropButtonSize);
-//     self.pointH.frame=CGRectMake((self.pointA.frame.origin.x+self.pointD.frame.origin.x)/2, (self.pointA.frame.origin.y+self.pointD.frame.origin.y)/2, kCropButtonSize, kCropButtonSize);
-//    
-//}
-//Middle Touch
-//- (void)movePointsForMiddle:(CGPoint)locationPoint
-//{
-//    switch (currentIndex) {
-//        case 4:{
-//            // 2 and 3
-//            self.pointA.frame=CGRectMake(self.pointA.frame.origin.x, locationPoint.y -kCropButtonSize/2, kCropButtonSize, kCropButtonSize);
-//            self.pointB.frame=CGRectMake(self.pointB.frame.origin.x, locationPoint.y -kCropButtonSize/2, kCropButtonSize, kCropButtonSize);
-//        }
-//            
-//            break;
-//            
-//        case 5:{
-//           // 1 and 2
-//            self.pointB.frame=CGRectMake(locationPoint.x -kCropButtonSize/2,self.pointB.frame.origin.y, kCropButtonSize, kCropButtonSize);
-//            self.pointC.frame=CGRectMake(locationPoint.x -kCropButtonSize/2,self.pointC.frame.origin.y, kCropButtonSize, kCropButtonSize);
-//
-//        }
-//            break;
-//        case 6:{
-//            //3 and 4
-//            self.pointC.frame=CGRectMake(self.pointC.frame.origin.x, locationPoint.y -kCropButtonSize/2, kCropButtonSize, kCropButtonSize);
-//            self.pointD.frame=CGRectMake(self.pointD.frame.origin.x, locationPoint.y -kCropButtonSize/2, kCropButtonSize, kCropButtonSize);
-//        }
-//            break;
-//        case 7:{
-//           // 1 and 4
-//            self.pointA.frame=CGRectMake(locationPoint.x -kCropButtonSize/2,self.pointA.frame.origin.y, kCropButtonSize, kCropButtonSize);
-//            self.pointD.frame=CGRectMake(locationPoint.x -kCropButtonSize/2,self.pointD.frame.origin.y, kCropButtonSize, kCropButtonSize);
-//        }
-//            break;
-//
-//
-//    }
-//    [self cornerControlsMiddle];
-//    
-//}
 
 @end

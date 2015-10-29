@@ -28,13 +28,8 @@
     if(self){
         
         NSURLSessionConfiguration *uploadConfig=[NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@"UploadDemo"];
-//        uploadConfig.timeoutIntervalForRequest = 30;
-//        uploadConfig.timeoutIntervalForResource = 30;
-//        uploadConfig.HTTPMaximumConnectionsPerHost = 1;
-//        uploadConfig.sessionSendsLaunchEvents=YES;
         uploadConfig.allowsCellularAccess = YES;
         uploadConfig.networkServiceType = NSURLNetworkServiceTypeBackground;
-//        uploadConfig.discretionary = YES;
         self.uploadSession=[NSURLSession sessionWithConfiguration:uploadConfig delegate:self delegateQueue:nil];
 
     }
@@ -61,7 +56,6 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend
     
     NSDictionary *userInfo=@{@"progress":@(progress)};
     
-//    NSLog(@"Progress %f",progress);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"UploadProgress" object:task userInfo:userInfo];
     
 }

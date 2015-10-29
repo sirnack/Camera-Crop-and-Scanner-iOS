@@ -7,9 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MobileCoreServices/MobileCoreServices.h>
+@interface ViewController : UIViewController<UIImagePickerControllerDelegate,UINavigationControllerDelegate>
+@property (weak, nonatomic) IBOutlet UIButton *cameraBut;
+@property (weak, nonatomic) IBOutlet UIButton *pickerBut;
 
-@interface ViewController : UIViewController
-
+@property (strong ,nonatomic) UIImagePickerController *invokeCamera;
+- (IBAction)cameraAction:(id)sender;
+- (IBAction)pickerAction:(id)sender;
 
 @end
-
